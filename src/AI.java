@@ -30,7 +30,7 @@ public class AI extends Player{
 	}
 
 	@Override
-	public void placeMines(Cell[][] field) {
+	public void placeMines(Cell[][] field, FieldService service) {
 
 	}
 

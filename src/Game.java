@@ -18,9 +18,9 @@ public class Game {
 		
 		System.out.println(p1);
 		System.out.println(p2);
-		
-		this.p1.placeMines(p2.field);
-		this.p2.placeMines(p1.field);
+		System.out.println(p2.field);
+		this.p1.placeMines(p2.field, service);
+		this.p2.placeMines(p1.field, service);
 		
 		this.p1.placeShips();
 		this.p2.placeShips();

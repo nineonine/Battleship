@@ -20,7 +20,7 @@ public abstract class Player {
 		
 	}
 	
-	public void placeMines(Cell[][] field) {
+	public void placeMines(Cell[][] field, FieldService service) {
 		
 	}
 	

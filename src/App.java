@@ -13,11 +13,11 @@ public class App {
 
 		notDone = true;
 		operator = new Operator("menu");
-		settingsObj = new Settings();
+		settingsObj = new Settings(); // Instantiating default settings 
+		
+		operator.printMenu();
 
 		while(notDone) {
-
-			operator.printMenu();
 
 			String choice = operator.listen();
 

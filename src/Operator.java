@@ -21,6 +21,10 @@ public class Operator {
 		this.menuLevel = env;
 		sc = new Scanner(System.in);
 	}
+	
+	public void printLine(String s) {
+		System.out.println(s);
+	}
 
 	public void printMenu() {
 
