@@ -1,5 +1,5 @@
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 
 public class AI extends Player{
@@ -10,13 +10,15 @@ public class AI extends Player{
 	Cell[][] enemyField;
 	int mines;
 	int attempts;
-	ArrayList<Ship> fleet;
+	LinkedList<Ship> fleet;
+	LinkedList<String> shipCoords;
 	
 	public AI(String name, int mines, FieldService service, Operator op) {
 		this.op = op;
 		this.name = name;
 		this.mines = mines;
 		this.field = service.generateField();
+		this.fleet = service.dispatchShips();
 		this.attempts = 0;
 	}
 	
@@ -31,15 +33,16 @@ public class AI extends Player{
 	}
 
 	@Override
-	public void placeShips() {
+	public void placeShips(FieldService service) {
 
 	}
 
 	@Override
 	public void placeMines(Cell[][] field, FieldService service) {
 		op.printLine("\t" + this.name + " is placing mines ... \n");
+		// emulation of thinking bot ^_^
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

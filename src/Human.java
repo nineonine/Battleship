@@ -1,5 +1,6 @@
-import java.util.ArrayList;
+import java.lang.Character.Subset;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class Human extends Player {
 
@@ -8,13 +9,15 @@ public class Human extends Player {
 	Cell[][] field;
 	int mines;
 	int attempts;
-	ArrayList<Ship> fleet;
+	LinkedList<Ship> fleet;
+	LinkedList<String> shipCoords;
 
 	public Human(String name, int mines, FieldService service, Operator op) {
 		this.op = op;
 		this.name = name;
 		this.mines = mines;
 		this.field = service.generateField();
+		this.fleet = service.dispatchShips();
 		this.attempts = 0;
 	}
 	
@@ -23,7 +26,36 @@ public class Human extends Player {
 	}
 
 	@Override
-	public void placeShips() {
+	public void placeShips(FieldService service) {
+		
+		op.printLine(this.name + " is placing ships ... \n");
+		op.printLine("Please enter cell coordinates");
+		op.printLine("Example : 'a1 h' will result in placing 4sized ship in a1-a2-a3-a4");
+		op.printLine("\t\t\tdisplaying example field here <--------\n");
+		
+		while(!this.fleet.isEmpty()) {
+			
+			op.printLine("Placing ship of size : " + fleet.getLast().size);
+			String command = op.listen();
+			if (command.matches("^[a-hA-H]{1}[1-8]{1}[\\s]{1}[hHvV]{1}(.*)")) {
+				System.out.println(this.fleet.size());
+				// example : 'g1 v' or 'a6 h'
+				// we can now try placing ships
+				String orientation = command.substring(command.length()-1);
+				String coordTag = command.substring(0,2);
+				
+				if(service.possibleToPlaceShip(this.fleet.getLast() ,this.returnField(), orientation)) {
+					service.placeShip(coordTag, this.fleet.getLast(), this.returnField());
+					this.fleet.removeLast();
+					shipCoords.add(coordTag);
+				}
+				
+			} else {
+				op.printLine("Wrong command. Please try again.");
+				op.printHelp();
+				continue;
+			}
+		}
 
 	}
 
@@ -75,5 +107,5 @@ public class Human extends Player {
 				+ Arrays.toString(field) + ", mines=" + mines + ", attempts="
 				+ attempts + ", fleet=" + fleet + "]";
 	}
-
+	
 }

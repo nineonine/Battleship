@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-
+import java.util.LinkedList;
 
 public abstract class Player {
 	
@@ -7,7 +6,8 @@ public abstract class Player {
 	Cell[][] field;
 	int mines;
 	int attempts;
-	ArrayList<Ship> fleet;
+	LinkedList<Ship> fleet;
+	LinkedList<String> shipCoords;
 	
 	public Player() {
 		
@@ -17,7 +17,7 @@ public abstract class Player {
 		
 	}
 	
-	public void placeShips() {
+	public void placeShips(FieldService service) {
 		
 	}
 	

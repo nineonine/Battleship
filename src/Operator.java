@@ -78,7 +78,7 @@ public class Operator {
 	}
 	
 	public String listen() {
-		this.lastCommand = this.sc.next();
+		this.lastCommand = this.sc.nextLine();
 		return this.lastCommand;
 	}
 	

@@ -9,7 +9,7 @@ public class Game {
 	public Game(Operator op, Settings st) {
 		
 		this.op = op;
-		service = new FieldService();
+		service = new FieldService(st);
 		logger = new GameLogger(op.dateStamp());
 		
 		op.printLine("\t\tGame starts !");
@@ -23,15 +23,13 @@ public class Game {
 		
 		logger.updateLog(this.p1.name + " vs " + this.p2.name);
 		
-//		System.out.println(p1);
-//		System.out.println(p2);
 		op.printLine("Entering mine placement phase ...\n");
 		
 		this.p1.placeMines(p2.returnField(), service);
 		this.p2.placeMines(p1.returnField(), service);
 		
-		this.p1.placeShips();
-		this.p2.placeShips();
+		this.p1.placeShips(service);
+		this.p2.placeShips(service);
 		
 		
 	}

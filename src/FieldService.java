@@ -1,10 +1,13 @@
+import java.util.LinkedList;
+
 
 
 public class FieldService {
 	
+	Settings st;
 	
-	public FieldService() {
-		
+	public FieldService(Settings st) {
+		this.st = st;
 	}
 	
 	// Generates two-dimensional array of Cells and connects them
@@ -59,6 +62,34 @@ public class FieldService {
 			}
 		}
 		return cell;
+	}
+
+	public LinkedList<Ship> dispatchShips() {
+		int numOf4sized = st.numOfships4;
+		int numOf3sized = st.numOfships3;
+		LinkedList<Ship> stack = new LinkedList<Ship>();
+		while(numOf4sized!=0) {
+			Ship ship = new Ship(4);
+			stack.add(ship);
+			numOf4sized--;
+		}
+		while(numOf3sized!=0) {
+			Ship ship = new Ship(3);
+			stack.add(ship);
+			numOf3sized--;
+		}
+		return stack;
+	}
+
+	public boolean possibleToPlaceShip(Ship ship, Cell[][] field, String orientation) {
+		
+		
+		
+		return false;
+	}
+	
+	public void placeShip(String tag, Ship ship, Cell[][] field) {
+		
 	}
 	
 
