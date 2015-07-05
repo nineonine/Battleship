@@ -4,23 +4,31 @@ public class Game {
 	public Player p1;
 	public Player p2;
 	public Operator op;
+	public GameLogger logger;
 	
 	public Game(Operator op, Settings st) {
 		
 		this.op = op;
 		service = new FieldService();
+		logger = new GameLogger(op.dateStamp());
+		
+		op.printLine("\t\tGame starts !");
+		op.printLine("Date : " + op.dateStamp()+"\n");
+		
+		
 		this.p1 = new Human(st.player1Name, st.numOfMines, service, op);
 		if(st.multiPlayerOn) {
-			this.p2 = new Human(st.player2Name, st.numOfMines, service, op);
-		} else {
-			this.p2 = new AI("Bot", st.numOfMines, service);
-		}
+			this.p2 = new Human(st.player2Name, st.numOfMines, service, op);} else {
+			this.p2 = new AI("Bot", st.numOfMines, service, op);}
 		
-		System.out.println(p1);
-		System.out.println(p2);
-		System.out.println(p2.field);
-		this.p1.placeMines(p2.field, service);
-		this.p2.placeMines(p1.field, service);
+		logger.updateLog(this.p1.name + " vs " + this.p2.name);
+		
+//		System.out.println(p1);
+//		System.out.println(p2);
+		op.printLine("Entering mine placement phase ...\n");
+		
+		this.p1.placeMines(p2.returnField(), service);
+		this.p2.placeMines(p1.returnField(), service);
 		
 		this.p1.placeShips();
 		this.p2.placeShips();

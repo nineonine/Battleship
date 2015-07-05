@@ -1,5 +1,4 @@
 
-
 public class App {
 
 	private static Settings settingsObj;

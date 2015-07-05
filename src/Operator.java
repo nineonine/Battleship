@@ -1,7 +1,9 @@
+import java.util.Date;
 import java.util.Scanner;
 
 public class Operator {
-
+	
+	Date date;
 	Scanner sc;
 	String lastCommand;
 
@@ -40,11 +42,6 @@ public class Operator {
 
 	}
 
-	public String listen() {
-		this.lastCommand = this.sc.next();
-		return this.lastCommand;
-	}
-
 	public void printHelp() {
 
 		switch (this.menuLevel) {
@@ -79,5 +76,16 @@ public class Operator {
 		}
 
 	}
-
+	
+	public String listen() {
+		this.lastCommand = this.sc.next();
+		return this.lastCommand;
+	}
+	
+	public String dateStamp() {
+		
+		this.date = new Date();
+		
+		return date.toString();
+	}
 }

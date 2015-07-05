@@ -17,6 +17,10 @@ public class Human extends Player {
 		this.field = service.generateField();
 		this.attempts = 0;
 	}
+	
+	public Cell[][] returnField() {
+		return this.field;
+	}
 
 	@Override
 	public void placeShips() {
@@ -25,31 +29,30 @@ public class Human extends Player {
 
 	@Override
 	public void placeMines(Cell[][] passedField, FieldService service) {
-
+		
+		op.printLine(this.name + " is placing mines ... \n");
 		op.printLine("Please enter cell coordinates");
 		op.printLine("Example : 'a1' or 'h8'");
 		// command for placing ships
 		// a1
-		System.out.println("DEBUG FIELD : " + passedField);
+
 		while (this.mines != 0) {
 			String coord = op.listen();
 			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
 				
-				System.out.println(service.returnCellByTag("a2", passedField));
 				// getting Cell here
 				// if isMined then 'continue' - we have to re enter coords
 				// else -> setting isMined to TRUE
 				// decrementing this.mines
-				Cell cell = service.returnCellByTag("a2", passedField);
-				System.out.println(cell);
+				Cell cell = service.returnCellByTag(coord.substring(0,2), passedField);
 
 				if (cell.isMined) {
 					op.printLine("This cell is already mined. Please choose another one.");
 					continue;
 				} else {
 					cell.isMined = true;
-					op.printLine(coord.substring(0,2) + " is mined ! " + this.mines + " mines left.");
 					this.mines--;
+					op.printLine(coord.substring(0,2) + " is mined ! " + this.mines + " mines left.");
 				}
 
 			} else {
@@ -58,7 +61,7 @@ public class Human extends Player {
 				continue;
 			}
 		}
-
+		op.printLine("Mine placement Complete !\n");
 	}
 
 	@Override

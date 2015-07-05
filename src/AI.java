@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class AI extends Player{
 	
+	Operator op;
 	String name;
 	Cell[][] field;
 	Cell[][] enemyField;
@@ -11,11 +12,16 @@ public class AI extends Player{
 	int attempts;
 	ArrayList<Ship> fleet;
 	
-	public AI(String name, int mines, FieldService service) {
+	public AI(String name, int mines, FieldService service, Operator op) {
+		this.op = op;
 		this.name = name;
 		this.mines = mines;
 		this.field = service.generateField();
 		this.attempts = 0;
+	}
+	
+	public Cell[][] returnField() {
+		return this.field;
 	}
 
 	@Override
@@ -31,6 +37,13 @@ public class AI extends Player{
 
 	@Override
 	public void placeMines(Cell[][] field, FieldService service) {
+		op.printLine("\t" + this.name + " is placing mines ... \n");
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		op.printLine("\t" + this.name + " completed mine placement !\n");
 
 	}
 

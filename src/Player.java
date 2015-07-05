@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public abstract class Player {
 	
+	String name;
 	Cell[][] field;
 	int mines;
 	int attempts;
@@ -22,6 +23,10 @@ public abstract class Player {
 	
 	public void placeMines(Cell[][] field, FieldService service) {
 		
+	}
+
+	public Cell[][] returnField() {
+		return this.field;
 	}
 	
 
