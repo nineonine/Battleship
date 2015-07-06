@@ -1,3 +1,4 @@
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 public class FieldService {
@@ -118,21 +119,28 @@ public class FieldService {
 		return stack;
 	}
 
-	public boolean possibleToPlaceShip(String tagCoord, Ship ship,
-			Cell[][] field, String orientation) {
+	public boolean possibleToPlaceShip(Cell cell, Ship ship,
+			Cell[][] field, String orientation, int counter) {
 		
-		int size = ship.size;
-		Cell cell = this.returnCellByTag(tagCoord, field);
-		
-		if(cell.slot != null) {
-			return false; // this cell is already occupied
+		if(counter == 0) {
+			return true;
 		}
-		
-		while(cell != null && cell.slot == null) {
+		else if(cell==null) {
+			return false;
+		} else if (cell.slot != null) {
+			return false;
+		} else {
+			switch(orientation) {
+			case "v":
+				cell = cell.south;
+				break;
+			case "h":
+				cell = cell.east;
+				break;
+			}
 			
+			return this.possibleToPlaceShip(cell, ship, field, orientation, --counter);
 		}
-		
-		return true;
 	}
 
 	public void placeShip(String tag, Ship ship, Cell[][] field,
@@ -158,7 +166,7 @@ public class FieldService {
 		case ("v"):
 			while (size != 0) {
 				cell.deployShip(ship);
-				op.print("Ship(" + ship.size
+				op.printLine("Ship(" + ship.size
 						+ ") was successfully deployed to Cell " + cell.tag);
 				coords.add(cell.tag);
 				cell = cell.south;
@@ -169,26 +177,26 @@ public class FieldService {
 
 	}
 
+	public void detectMineOverlapping(Player player) {
+		
+		for(int i = 0; i < player.returnShipCoords().size();i++) {
+			for(int j = 0; j < player.returnMineCoords().size();j++) {
+				String tag = player.returnMineCoords().get(j);
+				if(player.returnShipCoords().get(i).equals(tag)) {
+					player.returnShipCoords().remove(i);
+					op.printLine("Mine at '" + player.returnMineCoords().get(j) + "' exploded. \n"
+							+ player.returnName() + "'s ship is damaged !\n");
+				} 
+				this.returnCellByTag(tag, player.returnField()).isShot = true;
+			}
+		}		
+	}
+
 //	public static void main(String args[]) {
 //		FieldService fs = new FieldService();
 //		Cell[][] field = fs.generateField();
-//		Cell cell = new FieldService().returnCellByTag("h1", field);
-//		System.out.println(cell);
-//		System.out.println("SHOULD BE SOUTH " + cell.south);
-//		System.out.println("SHOULD BE NORTH " + cell.north);
-//		System.out.println("SHOULD BE EAST  " + cell.east);
-//		System.out.println("SHOULD BE WEST " + cell.west);
 //		for (int i = 0; i < field.length; i++) {
 //			for (int j = 0; j < field.length; j++) {
-//
-//				System.out.print((field[i][j]).toString() + "\t");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//
-//		
-//
-//	}
+//				System.out.print((field[i][j]).toString() + "\t");}System.out.println();}System.out.println();}
 
 }

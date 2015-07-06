@@ -12,7 +12,7 @@ public class Game {
 		service = new FieldService(this.op, st);
 		logger = new GameLogger(op.dateStamp());
 		
-		op.printLine("\t\tGame starts !");
+		op.printLine("\t\tGame setup starts !");
 		op.printLine("Date : " + op.dateStamp()+"\n");
 		
 		
@@ -25,8 +25,8 @@ public class Game {
 		
 		op.printLine("Entering mine placement phase ...\n");
 		
-		this.p1.placeMines(p2.returnField(), service);
-		this.p2.placeMines(p1.returnField(), service);
+		this.p1.placeMines(p2.returnField(), p2.returnMineCoords(), service);
+		this.p2.placeMines(p1.returnField(), p1.returnMineCoords(), service);
 		
 		this.p1.placeShips(service);
 		this.p2.placeShips(service);
@@ -38,6 +38,9 @@ public class Game {
 	
 	
 	public void run() {
+		
+		this.service.detectMineOverlapping(this.p1);
+		this.service.detectMineOverlapping(this.p2);
 
 		
 		// check mine-ship overlapping

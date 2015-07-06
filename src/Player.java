@@ -8,6 +8,7 @@ public abstract class Player {
 	int attempts;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
+	LinkedList<String> mineCoords;
 	
 	public Player() {
 		
@@ -21,12 +22,25 @@ public abstract class Player {
 		
 	}
 	
-	public void placeMines(Cell[][] field, FieldService service) {
+	public void placeMines(Cell[][] field, LinkedList<String> mineCoords, FieldService service) {
 		
+	}
+	
+	public String returnName() {
+		return this.name;
 	}
 
 	public Cell[][] returnField() {
 		return this.field;
+	}
+	
+	public LinkedList<String> returnMineCoords() {
+		return this.mineCoords;
+	}
+
+	public LinkedList<String> returnShipCoords() {
+	
+		return this.shipCoords;
 	}
 	
 

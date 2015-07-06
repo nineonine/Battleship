@@ -10,6 +10,7 @@ public class Human extends Player {
 	int attempts;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
+	LinkedList<String> mineCoords;
 
 	public Human(String name, int mines, FieldService service,
 			Operator<Object> op) {
@@ -20,10 +21,23 @@ public class Human extends Player {
 		this.fleet = service.dispatchShips();
 		this.attempts = 0;
 		this.shipCoords = new LinkedList<String>();
+		this.mineCoords = new LinkedList<String>();
 	}
-
+	
+	public String returnName() {
+		return this.name;
+	}
+	
 	public Cell[][] returnField() {
 		return this.field;
+	}
+	
+	public LinkedList<String> returnShipCoords() {
+		return this.shipCoords;
+	}
+	
+	public LinkedList<String> returnMineCoords() {
+		return this.mineCoords;
 	}
 
 	@Override
@@ -41,9 +55,12 @@ public class Human extends Player {
 			if (command.matches("^[a-hA-H]{1}[1-8]{1}[\\s]{1}[hHvV]{1}(.*)")) {
 				// example : 'g1 v' or 'a6 h'
 				// we can now try placing ships
-				if (service.possibleToPlaceShip(command.substring(0, 2),
-						this.fleet.getLast(), this.returnField(),
-						command.substring(command.length() - 1))) 
+				if (service.possibleToPlaceShip(
+						service.returnCellByTag(command.substring(0, 2), field),
+						this.fleet.getLast(),
+						this.returnField(),
+						command.substring(command.length() - 1),
+						this.fleet.getLast().size)) 
 				{
 					service.placeShip(command, this.fleet.getLast(),
 							this.returnField(), this.shipCoords);
@@ -52,7 +69,7 @@ public class Human extends Player {
 							+ shipCoords.toString());
 				} else {
 					op.printLine("Impossible to place ship here. It is either occupied or you are going out of field bounds");
-					op.printLine(" ------------- display playes field here");
+					op.printLine(" ------------- display players field here");
 				}
 
 			} else {
@@ -62,12 +79,12 @@ public class Human extends Player {
 			}
 		}
 		
-		op.printLine("\n" + this.name + " finished deploying ships...");
+		op.printLine("\n" + this.name + " finished deploying ships...\n");
 
 	}
 
 	@Override
-	public void placeMines(Cell[][] passedField, FieldService service) {
+	public void placeMines(Cell[][] passedField, LinkedList<String> passedMineCoords, FieldService service) {
 
 		op.printLine(this.name + " is placing mines ... \n");
 		op.printLine("Please enter cell coordinates");
@@ -90,6 +107,7 @@ public class Human extends Player {
 					op.printLine("This cell is already mined. Please choose another one.");
 					continue;
 				} else {
+					passedMineCoords.add(coord.substring(0, 2));
 					cell.isMined = true;
 					this.mines--;
 					op.printLine(coord.substring(0, 2) + " is mined ! "
@@ -102,6 +120,7 @@ public class Human extends Player {
 				continue;
 			}
 		}
+		op.debug("mine coords : "+ passedMineCoords);
 		op.printLine("Mine placement Complete !\n");
 	}
 

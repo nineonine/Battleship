@@ -12,6 +12,7 @@ public class AI extends Player{
 	int attempts;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
+	LinkedList<String> mineCoords;
 	
 	public AI(String name, int mines, FieldService service, Operator<Object> op) {
 		this.op = op;
@@ -20,10 +21,24 @@ public class AI extends Player{
 		this.field = service.generateField();
 		this.fleet = service.dispatchShips();
 		this.attempts = 0;
+		this.shipCoords = new LinkedList<String>();
+		this.mineCoords = new LinkedList<String>();
+	}
+	
+	public String returnName() {
+		return this.name;
 	}
 	
 	public Cell[][] returnField() {
 		return this.field;
+	}
+
+	public LinkedList<String> returnShipCoords() {
+		return this.shipCoords;
+	}
+	
+	public LinkedList<String> returnMineCoords() {
+		return this.mineCoords;
 	}
 
 	@Override
@@ -46,9 +61,12 @@ public class AI extends Player{
 	}
 
 	@Override
-	public void placeMines(Cell[][] field, FieldService service) {
+	public void placeMines(Cell[][] field, LinkedList<String> passedMineCoords, FieldService service) {
 		op.printLine("\t" + this.name + " is placing mines ... \n");
 		// emulation of thinking bot ^_^
+		passedMineCoords.add("a1");
+		passedMineCoords.add("a2");
+		passedMineCoords.add("a3");
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
