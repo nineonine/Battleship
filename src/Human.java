@@ -135,6 +135,11 @@ public class Human extends Player {
 		while (shots != 0) {
 			String coord = op.listen();
 			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
+				
+				if(service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot) {
+					op.printLine("Can not shoot at one place twice. Please try again");
+					continue;
+				}
 
 				if (passedPlayer.returnShipCoords().contains(
 						coord.substring(0, 2))) {
@@ -143,12 +148,14 @@ public class Human extends Player {
 							+ coord.substring(0, 2) + "' !");
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
 					passedPlayer.returnShipCoords().remove(coord.substring(0,2));
+					op.debug(passedPlayer.returnShipCoords());
 					if(passedPlayer.returnShipCoords().size() == 0) {
+						op.printLine(this.returnName() + " wins !");
 						return;
 					}
 					++shots;
 				} else {
-					op.printLine(this.returnName() + "tried to aim at " + coord.substring(0,2) + " ... but missed :(");
+					op.printLine(this.returnName() + " tried to aim at " + coord.substring(0,2) + " ... but missed :(");
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
 				}
 

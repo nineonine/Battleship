@@ -41,26 +41,25 @@ public class Game {
 	
 	public void run() {
 		
-		Random rand = new Random();
+//		Random rand = new Random();
 		
 		this.service.detectMineOverlapping(this.p1);
 		this.service.detectMineOverlapping(this.p2);
 		
 		//now we have our players with set mines/ships and exploded mines/ships
 		while(this.p1.returnShipCoords().size() !=0 && this.p2.returnShipCoords().size() != 0) {
-			
+//			rand.nextInt(2)+1
+			switch(0) {
+			case 0:
+				this.p1.shootAt(p2, service);
+				break;
+			case 1:
+				this.p2.shootAt(p1, service);
+				break;
+			}
 		}
 		
-//		rand.nextInt(2)+1
-		switch(0) {
-		case 0:
-			this.p1.shootAt(p2, service);
-			break;
-		case 1:
-			this.p2.shootAt(p1, service);
-			break;
-		}
-		
+
 		//randomly get the first-mover
 	
 		
