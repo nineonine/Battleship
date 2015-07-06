@@ -3,13 +3,13 @@ public class Game {
 	public FieldService service;
 	public Player p1;
 	public Player p2;
-	public Operator op;
+	public Operator<Object> op;
 	public GameLogger logger;
 	
-	public Game(Operator op, Settings st) {
+	public Game(Operator<Object> op, Settings st) {
 		
 		this.op = op;
-		service = new FieldService(st);
+		service = new FieldService(this.op, st);
 		logger = new GameLogger(op.dateStamp());
 		
 		op.printLine("\t\tGame starts !");
@@ -31,6 +31,7 @@ public class Game {
 		this.p1.placeShips(service);
 		this.p2.placeShips(service);
 		
+		op.printLine("Everyone ready !!! Game starts !");
 		
 	}
 	

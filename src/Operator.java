@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.Scanner;
 
-public class Operator {
+public class Operator<T> {
 	
 	Date date;
 	Scanner sc;
@@ -24,7 +24,15 @@ public class Operator {
 		sc = new Scanner(System.in);
 	}
 	
-	public void printLine(String s) {
+	public void printLine(T s) {
+		System.out.println(s);
+	}
+	
+	public void print(T s) {
+		System.out.print(s);
+	}
+	
+	public void debug(T s) {
 		System.out.println(s);
 	}
 

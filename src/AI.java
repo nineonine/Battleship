@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class AI extends Player{
 	
-	Operator op;
+	Operator<Object> op;
 	String name;
 	Cell[][] field;
 	Cell[][] enemyField;
@@ -13,7 +13,7 @@ public class AI extends Player{
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
 	
-	public AI(String name, int mines, FieldService service, Operator op) {
+	public AI(String name, int mines, FieldService service, Operator<Object> op) {
 		this.op = op;
 		this.name = name;
 		this.mines = mines;
@@ -34,6 +34,14 @@ public class AI extends Player{
 
 	@Override
 	public void placeShips(FieldService service) {
+		op.printLine("\t" + this.name + " is placing ships ... \n");
+		// emulation of thinking bot ^_^
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		op.printLine("\t" + this.name + " completed ship placement !\n");
 
 	}
 

@@ -3,7 +3,7 @@ public class App {
 
 	private static Settings settingsObj;
 	private static Game game;
-	private static Operator operator;
+	private static Operator<Object> operator;
 
 	private static boolean notDone; // controlling the main loop of execution. Helps us exit the program 
 
@@ -11,7 +11,7 @@ public class App {
 	public static void main(String[] args) {
 
 		notDone = true;
-		operator = new Operator("menu");
+		operator = new Operator<Object>("menu");
 		settingsObj = new Settings(); // Instantiating default settings 
 		
 		operator.printMenu();

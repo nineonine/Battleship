@@ -1,5 +1,3 @@
-import java.util.Date;
-
 public class GameLogger {
 	private static String FILEPATH = "path to saved replays";
 	public StringBuilder log;

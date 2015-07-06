@@ -7,8 +7,7 @@ public class Cell {
 	boolean isShot;
 	private int x;
 	private int y;
-	private Ship slot;
-	
+	Ship slot;
 	
 	public Cell(int x, int y) {
 		super();
@@ -49,7 +48,7 @@ public class Cell {
 
 	//debugging
 	public String toString() {
-		return "Cell : " + tag;
+		return "Cell : " + tag + "(" + x + ";" + y + ")";
 	}
 	
 	
