@@ -1,3 +1,5 @@
+import java.util.Random;
+
 
 public class Game {
 	public FieldService service;
@@ -31,7 +33,7 @@ public class Game {
 		this.p1.placeShips(service);
 		this.p2.placeShips(service);
 		
-		op.printLine("Everyone ready !!! Game starts !");
+		op.printLine("Everyone ready !!! Game starts !\n");
 		
 	}
 	
@@ -39,16 +41,28 @@ public class Game {
 	
 	public void run() {
 		
+		Random rand = new Random();
+		
 		this.service.detectMineOverlapping(this.p1);
 		this.service.detectMineOverlapping(this.p2);
-
 		
-		// check mine-ship overlapping
-		// if true - update 'damaged' cells on fields and inform player about that
-		// i think this method has to belong to FieldService
-		// service.checkAndUpdateField(p1.field)     <---- example
+		//now we have our players with set mines/ships and exploded mines/ships
+		while(this.p1.returnShipCoords().size() !=0 && this.p2.returnShipCoords().size() != 0) {
+			
+		}
+		
+//		rand.nextInt(2)+1
+		switch(0) {
+		case 0:
+			this.p1.shootAt(p2, service);
+			break;
+		case 1:
+			this.p2.shootAt(p1, service);
+			break;
+		}
 		
 		//randomly get the first-mover
+	
 		
 		
 	}

@@ -152,7 +152,6 @@ public class FieldService {
 		//
 		cell = this.returnCellByTag(tag.substring(0, 2), field);
 		switch (tag.substring(3, 4).toLowerCase()) {
-
 		case ("h"):
 			while (size != 0) {
 				cell.deployShip(ship);

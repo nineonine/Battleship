@@ -14,8 +14,8 @@ public abstract class Player {
 		
 	}
 	
-	public void shoot(Cell[][] field, String coord) {
-		
+	public void shootAt(Player passedPlayer, FieldService service) {
+
 	}
 	
 	public void placeShips(FieldService service) {

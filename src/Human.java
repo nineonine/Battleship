@@ -23,19 +23,19 @@ public class Human extends Player {
 		this.shipCoords = new LinkedList<String>();
 		this.mineCoords = new LinkedList<String>();
 	}
-	
+
 	public String returnName() {
 		return this.name;
 	}
-	
+
 	public Cell[][] returnField() {
 		return this.field;
 	}
-	
+
 	public LinkedList<String> returnShipCoords() {
 		return this.shipCoords;
 	}
-	
+
 	public LinkedList<String> returnMineCoords() {
 		return this.mineCoords;
 	}
@@ -50,18 +50,18 @@ public class Human extends Player {
 
 		while (!this.fleet.isEmpty()) {
 
-			op.printLine("Placing ship of size : " + fleet.getLast().size + " . Ships left: " +this.fleet.size());
+			op.printLine("Placing ship of size : " + fleet.getLast().size
+					+ " . Ships left: " + this.fleet.size());
 			String command = op.listen();
 			if (command.matches("^[a-hA-H]{1}[1-8]{1}[\\s]{1}[hHvV]{1}(.*)")) {
 				// example : 'g1 v' or 'a6 h'
 				// we can now try placing ships
-				if (service.possibleToPlaceShip(
-						service.returnCellByTag(command.substring(0, 2), field),
-						this.fleet.getLast(),
-						this.returnField(),
-						command.substring(command.length() - 1),
-						this.fleet.getLast().size)) 
-				{
+				if (service
+						.possibleToPlaceShip(service.returnCellByTag(
+								command.substring(0, 2), field), this.fleet
+								.getLast(), this.returnField(), command
+								.substring(command.length() - 1), this.fleet
+								.getLast().size)) {
 					service.placeShip(command, this.fleet.getLast(),
 							this.returnField(), this.shipCoords);
 					this.fleet.removeLast();
@@ -78,13 +78,14 @@ public class Human extends Player {
 				continue;
 			}
 		}
-		
+
 		op.printLine("\n" + this.name + " finished deploying ships...\n");
 
 	}
 
 	@Override
-	public void placeMines(Cell[][] passedField, LinkedList<String> passedMineCoords, FieldService service) {
+	public void placeMines(Cell[][] passedField,
+			LinkedList<String> passedMineCoords, FieldService service) {
 
 		op.printLine(this.name + " is placing mines ... \n");
 		op.printLine("Please enter cell coordinates");
@@ -120,13 +121,45 @@ public class Human extends Player {
 				continue;
 			}
 		}
-		op.debug("mine coords : "+ passedMineCoords);
+		op.debug("mine coords : " + passedMineCoords);
 		op.printLine("Mine placement Complete !\n");
 	}
 
 	@Override
-	public void shoot(Cell[][] field, String coord) {
+	public void shootAt(Player passedPlayer, FieldService service) {
+		int shots = 1;
+		op.printLine(this.name + " is shooting ... \n");
+		op.printLine("Please enter cell coordinates");
+		op.printLine("Example : 'a1' or 'h8'");
 
+		while (shots != 0) {
+			String coord = op.listen();
+			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
+
+				if (passedPlayer.returnShipCoords().contains(
+						coord.substring(0, 2))) {
+					op.printLine(this.returnName() + " aimed at "
+							+ passedPlayer.returnName() + "'s ship at '"
+							+ coord.substring(0, 2) + "' !");
+					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
+					passedPlayer.returnShipCoords().remove(coord.substring(0,2));
+					if(passedPlayer.returnShipCoords().size() == 0) {
+						return;
+					}
+					++shots;
+				} else {
+					op.printLine(this.returnName() + "tried to aim at " + coord.substring(0,2) + " ... but missed :(");
+					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
+				}
+
+			} else {
+				op.printLine("Wrong command. Please try again.");
+				op.printHelp();
+				continue;
+			}
+			--shots;
+		}
+		passedPlayer.shootAt(this, service);
 	}
 
 	@Override

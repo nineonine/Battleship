@@ -42,15 +42,28 @@ public class AI extends Player{
 	}
 
 	@Override
-	public void shoot(Cell[][] field, String coord) {
-		
-		
+	public void shootAt(Player passedPlayer, FieldService service) {
+
 	}
 
 	@Override
 	public void placeShips(FieldService service) {
 		op.printLine("\t" + this.name + " is placing ships ... \n");
 		// emulation of thinking bot ^_^
+		//
+		// For testing purposes, just for now AI places always at a1 v, a2 v, a3 v, a4 v;
+		
+		while(!this.fleet.isEmpty()) {
+			service.placeShip("a1 v", this.fleet.removeLast(),
+					this.returnField(), this.shipCoords);
+			service.placeShip("a2 v", this.fleet.removeLast(),
+					this.returnField(), this.shipCoords);
+			service.placeShip("a3 v", this.fleet.removeLast(),
+					this.returnField(), this.shipCoords);
+			service.placeShip("a4 v", this.fleet.removeLast(),
+					this.returnField(), this.shipCoords);
+		}
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
