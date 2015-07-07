@@ -1,10 +1,14 @@
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class FieldService {
 
 	Settings st;
 	Operator<Object> op;
+	LinkedList<String> listOfCoords;
+	Random rand;
 
 	public FieldService() {
 
@@ -13,6 +17,13 @@ public class FieldService {
 	public FieldService(Operator<Object> op, Settings st) {
 		this.st = st;
 		this.op = op;
+		this.listOfCoords = generateTags();
+		this.rand = new Random();
+	}
+	
+	public String getRandomTag() {
+		int randomIndex = rand.nextInt((this.listOfCoords.size()-1));
+		return this.listOfCoords.get(randomIndex);
 	}
 
 	// Generates two-dimensional array of Cells and connects them
@@ -174,6 +185,24 @@ public class FieldService {
 			break;
 		}
 
+	}
+	
+	public String getRandomOrientation() {
+		
+		Random rand = new Random();
+		return rand.nextBoolean() ? "h" : "v";
+	}
+	
+	public LinkedList<String> generateTags() {
+		
+		LinkedList<String> all = new LinkedList<String>();
+		LinkedList<String> letters = new LinkedList<String>(Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h"));
+		for(String e : letters) {
+			for(int i=1;i<9;i++) {
+				all.add(e+i);
+			}
+		}
+		return all;
 	}
 
 	public void detectMineOverlapping(Player player) {

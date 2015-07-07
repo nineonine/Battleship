@@ -1,9 +1,11 @@
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Random;
 
 
 public class AI extends Player{
 	
+	Random rand;
 	Operator<Object> op;
 	String name;
 	Cell[][] field;
@@ -13,6 +15,12 @@ public class AI extends Player{
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
 	LinkedList<String> mineCoords;
+	LinkedList<String> shotMemory;
+	String lastAim;
+	
+	public AI() {
+		this.rand = new Random();
+	}
 	
 	public AI(String name, int mines, FieldService service, Operator<Object> op) {
 		this.op = op;
@@ -23,6 +31,9 @@ public class AI extends Player{
 		this.attempts = 0;
 		this.shipCoords = new LinkedList<String>();
 		this.mineCoords = new LinkedList<String>();
+		this.shotMemory = service.generateTags();
+		this.rand = new Random();
+		this.lastAim = "";
 	}
 	
 	public String returnName() {
@@ -43,27 +54,42 @@ public class AI extends Player{
 
 	@Override
 	public void shootAt(Player passedPlayer, FieldService service) {
+		
+		int shots = 1;
+		op.printLine(this.name + " is shooting ... \n");
+		op.debug("...but he does not quite know how to do that so he waits");
+		
+		passedPlayer.shootAt(this, service);
 
 	}
 
 	@Override
 	public void placeShips(FieldService service) {
 		op.printLine("\t" + this.name + " is placing ships ... \n");
-		// emulation of thinking bot ^_^
-		//
-		// For testing purposes, just for now AI places always at a1 v, a2 v, a3 v, a4 v;
 		
 		while(!this.fleet.isEmpty()) {
-			service.placeShip("a1 v", this.fleet.removeLast(),
-					this.returnField(), this.shipCoords);
-			service.placeShip("a2 v", this.fleet.removeLast(),
-					this.returnField(), this.shipCoords);
-			service.placeShip("a3 v", this.fleet.removeLast(),
-					this.returnField(), this.shipCoords);
-			service.placeShip("a4 v", this.fleet.removeLast(),
-					this.returnField(), this.shipCoords);
+			
+			String randomCoord = service.getRandomTag();
+			String randomOrientation = service.getRandomOrientation();		
+			String command = randomCoord + " " + randomOrientation;
+			if (service
+					.possibleToPlaceShip(service.returnCellByTag(
+							command.substring(0, 2), field), this.fleet
+							.getLast(), this.returnField(), command
+							.substring(command.length() - 1), this.fleet
+							.getLast().size)) {
+				service.placeShip(command, this.fleet.getLast(),
+						this.returnField(), this.shipCoords);
+				this.fleet.removeLast();
+				op.printLine("Current ship placement : "
+						+ shipCoords.toString());
+			} else {
+				op.printLine("Impossible to place ship here. It is either occupied or you are going out of field bounds");
+				op.printLine(" ------------- display players field here");
+			}
 		}
 		
+		// emulation of thinking bot ^_^
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -76,10 +102,12 @@ public class AI extends Player{
 	@Override
 	public void placeMines(Cell[][] field, LinkedList<String> passedMineCoords, FieldService service) {
 		op.printLine("\t" + this.name + " is placing mines ... \n");
+
+		while(this.mines!=0) {
+			passedMineCoords.add(this.getAndRemoveRandomTagFromShotMemory());
+			this.mines--;
+		}
 		// emulation of thinking bot ^_^
-		passedMineCoords.add("a1");
-		passedMineCoords.add("a2");
-		passedMineCoords.add("a3");
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -88,6 +116,14 @@ public class AI extends Player{
 		op.printLine("\t" + this.name + " completed mine placement !\n");
 
 	}
+	
+	public String getAndRemoveRandomTagFromShotMemory() {
+		
+		int randomIndex = rand.nextInt((this.shotMemory.size()-1));
+		return this.shotMemory.remove(randomIndex);
+	}
+	
+	
 
 	@Override
 	public String toString() {
