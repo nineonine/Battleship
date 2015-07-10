@@ -22,11 +22,21 @@ public class Ship {
 		}
 	}
 	
+	public String showLeftCoords() {
+		
+		return "Ship coords left to destroy :" + this.shipCoords;
+	}
+	
 	public boolean IsDamaged() {	
 		return this.isDamaged = this.shipCoords.size() < this.size ? true : false;
 	}
 	
 	public boolean IsDestroyed() {	
 		return isDestroyed = this.shipCoords.size() == 0;
+	}
+
+	public String getFirstOccurenceOfnotDamagedPart() {
+		// TODO Auto-generated method stub
+		return this.shipCoords.element();
 	}
 }

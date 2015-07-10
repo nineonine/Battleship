@@ -12,6 +12,7 @@ public class AI extends Player {
 	Cell[][] enemyField;
 	int mines;
 	int attempts;
+	int shipsToDestroy;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
 	LinkedList<String> mineCoords;
@@ -30,6 +31,7 @@ public class AI extends Player {
 		this.mines = mines;
 		this.field = service.generateField();
 		this.fleet = service.dispatchShips();
+		this.shipsToDestroy = this.fleet.size();
 		this.attempts = 0;
 		this.shipCoords = new LinkedList<String>();
 		this.mineCoords = new LinkedList<String>();
@@ -57,14 +59,17 @@ public class AI extends Player {
 
 	@Override
 	public void shootAt(Player passedPlayer, FieldService service) {
+		
+		op.printLine(this.name + " is shooting ... \n");
 
 		int shots = 1;
 
 		while (shots != 0) {
-
-			if (this.lastAim != null) { // <-- we aimed previous time ! lastAim
-										// is saved as a String Cell tag
-				op.debug(this.name + " knows where to shoot now because this.lastAim = " + this.lastAim);
+			op.debug("\t\t new move\n");
+			
+			if (this.lastAim != null && !service.returnCellByTag(this.lastAim,
+					passedPlayer.returnField()).returnShip().IsDestroyed()) { // <-- we aimed previous time and the ship we are shooting at is not destroyed 
+				op.debug(this.name + " knows where to shoot now because this.lastAim = " + this.lastAim +  " and ship is Not Destroyed");
 				
 				// saving pointer to the cell we are working on
 				Cell cell = service.returnCellByTag(this.lastAim,
@@ -76,9 +81,9 @@ public class AI extends Player {
 				 In case of proved orientation hypothesis we consider this factor while refreshing our 'possiblePlacestoShootAt' history so we can filter out wrong coords
 				 Consider example --> 
 					 Lets pretend that we have our ship in b1-b2-b3
-					 Shot 1: Bot randomly chooses 'b2'. He stores this.lastAim = 'b2' and next time he will choose from possible cells around : this.possiblePlacestoShootAt = [b1, b3, a2, c3]
-					 Shot 2: Bot randomly chooses from 'this.possiblePlacestoShootAt' = [b1, b3, a2, c3] and gets  'b1'. He shoots again and he AIMS - this proves orientation and we store supposedOrientation = 'h' (horizontal) and lastAim to 'b1'
-					 Shot 3: Bot remembers lastAim = 'b1'. he appends new possiblePlacestoShootAt [a1, c1] to existing one [b3, a2, c3] 
+					 Shot 1: Bot randomly chooses 'b2'. He hits and stores this.lastAim = 'b2' and next time he will choose from possible cells around : this.possiblePlacestoShootAt = [b1, b3, a2, c2]
+					 Shot 2: Bot randomly chooses from 'this.possiblePlacestoShootAt' = [b1, b3, a2, c2] and gets  'b1'. He shoots again and he AIMS - this proves orientation and we store supposedOrientation = 'h' (horizontal) and lastAim to 'b1'
+					 Shot 3: Bot remembers lastAim = 'b1'. he appends new possiblePlacestoShootAt [a1, c1] to existing one [b3, a2, c2] 
 					 Shot 3(cont): now we have 'this.possiblePlacestoShootAt' = [b1, b3, a2, c3, a1, c1] and 'this.supposedOrientation' = h
 					 Shot 3(cont): So we filter out the vertical'ish coords which leaves us with [b3]
 					 We continue unless the ship we are shooting at is totally destroyed - then we just flush our this.possiblePlacestoShootAt, this.lastAim, this.supposedOrientation
@@ -88,12 +93,16 @@ public class AI extends Player {
 																this.lastAim, 
 																this.supposedOrientation),
 											service.getPossibleTargetsInVicinity(cell,this.supposedOrientation))));
-
-				int size = this.possiblePlacestoShootAt.size(); 
-				op.debug("possiblePlacestoShootAt : "
-						+ this.possiblePlacestoShootAt);
-				String pickedCoord = this.possiblePlacestoShootAt.remove(rand
-						.nextInt(size));
+				
+				op.debug("possiblePlacestoShootAt : "+ this.possiblePlacestoShootAt);
+				
+				String pickedCoord = "";
+				if(this.possiblePlacestoShootAt.size() == 0) {
+					pickedCoord = service.returnCellByTag(this.lastAim, passedPlayer.returnField()).returnShip().getFirstOccurenceOfnotDamagedPart();
+				} else {
+					pickedCoord = this.possiblePlacestoShootAt.removeLast(); // our HashSet -> LinkedList casting sorts the collection automatically so we don't bother with random picking because randomness is implicit in this transformation
+				}
+				
 				this.shotMemory.remove(pickedCoord); // removing from shotMemory
 
 				if (passedPlayer.returnShipCoords().contains(pickedCoord)) { // if we aimed
@@ -116,35 +125,41 @@ public class AI extends Player {
 					}
 
 					Ship hitShip = service.returnCellByTag(pickedCoord,
-							passedPlayer.returnField()).slot;
+							passedPlayer.returnField()).returnShip();
 					hitShip.destroyCell(pickedCoord);
 					if (!hitShip.isDestroyed) {
-						this.lastAim = pickedCoord; // we are not completely
-													// done with that ship. Have
-													// to aim somewhere in
-													// vicinity
+						op.debug("\tbefore starting new move we update this.possiblePlacestoShootAt");
+						op.debug("\t current this.possiblePlacestoShootAt : " + this.possiblePlacestoShootAt);
+						this.possiblePlacestoShootAt = service.filterOutBadCoords(this.possiblePlacestoShootAt, 
+												 								  this.lastAim, 
+																				  this.supposedOrientation);
+						op.debug("\t after filtering out : " + this.possiblePlacestoShootAt);
 						this.possiblePlacestoShootAt.remove(pickedCoord);
+						this.lastAim = pickedCoord; // we are not completely done with that ship. Have to aim somewhere in vicinity
 					} else {
-						this.lastAim = null; // job done - ship destroyed.
-												// Clearing cache to shoot
-												// randomly next time
+						this.lastAim = null; // job done - ship destroyed. Clearing cache to shoot randomly next time
+						this.supposedOrientation = "undefined"; 
+						this.shipsToDestroy--;
 						this.possiblePlacestoShootAt = new LinkedList<String>();
+						System.out.println(passedPlayer.returnName() + " Ship of size (" + hitShip.size + ") was destroyed !");// job done - ship destroyed.
 					}
 					++shots;
 				} else { // <-- its a miss
 					op.printLine(this.returnName() + " tried to aim at "
-							+ pickedCoord + " ... but missed :(");
-					service.returnCellByTag(this.lastAim,
+							+ pickedCoord + " ... but missed :(\n");
+					service.returnCellByTag(pickedCoord,
 							passedPlayer.returnField()).isShot = true;
-					this.switchOrientation(service.getOrientation(cell.tag,
-							pickedCoord));
-					this.possiblePlacestoShootAt.remove(pickedCoord);// next time we shoot - our
-											// possiblePlacestoShootAt value
-											// will be cleared out of 'bad
-											// orientation' coords
+					if(this.possiblePlacestoShootAt.size() > 1) {
+						this.switchOrientation(service.getOrientation(cell.tag,
+								pickedCoord));
+					}
+					this.possiblePlacestoShootAt.remove(pickedCoord);	// next time we shoot - our
+																		// possiblePlacestoShootAt value
+																		// will be cleared out of 'bad
+																		// orientation' coords
 				}
 
-			} else { // <---- we did not aim previous time
+			} else { // <---- we did not aim previous time - its a random shot
 				String coord = this.getAndRemoveRandomTagFromShotMemory();
 				Cell cell = service.returnCellByTag(coord,
 						passedPlayer.returnField());
@@ -157,20 +172,17 @@ public class AI extends Player {
 					op.printLine(this.name + " aimed at " + coord);
 					passedPlayer.returnShipCoords().remove(coord);
 
-					// check for winner
-					if (passedPlayer.returnShipCoords().size() == 0) {
-						op.printLine(this.returnName() + " wins !");
-						service.setWinner(this);
-						return;
-					}
-
 					hitShip.destroyCell(coord);
+					op.debug(hitShip.showLeftCoords());
 					if (!hitShip.isDestroyed) {
 						this.lastAim = coord; // we are not completely done with
 												// that ship. Have to aim
 												// somewhere in vicinity
 					} else {
-						this.lastAim = null; // job done - ship destroyed.
+						this.lastAim = null;
+						this.shipsToDestroy--;
+						op.debug(passedPlayer.name + " Ship of size (" + hitShip.size + ") was desrtroyed !");// job done - ship destroyed.
+						op.debug("");
 												// Clearing cache to shoot
 												// randomly next time
 					}
@@ -178,28 +190,26 @@ public class AI extends Player {
 
 				} else { // <-- its a miss
 					op.printLine(this.returnName() + " tried to aim at "
-							+ coord + " ... but missed :(");
+							+ coord + " ... but missed :(\n");
 					cell.isShot = true;
 					this.getAndRemoveRandomTagFromShotMemory();
 				}
 			}
-
+			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords());
+			// check for winner
+			if (passedPlayer.returnShipCoords().size() == 0) {
+				op.printLine(this.returnName() + " wins !");
+				service.setWinner(this);
+				return;
+			}
 			--shots;
 		}
+		
+		
 		passedPlayer.shootAt(this, service);
 	}
 
-	private void switchOrientation(String orientation) {
-		switch (orientation) {
-		case "v":
-			this.supposedOrientation = "h";
-			return;
-		case "h":
-			this.supposedOrientation = "v";
-			return;
-		}
-
-	}
+	
 
 	@Override
 	public void placeShips(FieldService service) {
@@ -257,10 +267,22 @@ public class AI extends Player {
 
 	public String getAndRemoveRandomTagFromShotMemory() {
 
-		int randomIndex = rand.nextInt((this.shotMemory.size() - 1));
+		int randomIndex = rand.nextInt(this.shotMemory.size());
 		return this.shotMemory.remove(randomIndex);
 	}
+	
+	private void switchOrientation(String orientation) {
+		switch (orientation) {
+		case "v":
+			this.supposedOrientation = "h";
+			return;
+		case "h":
+			this.supposedOrientation = "v";
+			return;
+		}
 
+	}
+	
 	@Override
 	public String toString() {
 		return "AI [name=" + name + ", field=" + Arrays.toString(field)

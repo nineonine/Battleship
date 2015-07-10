@@ -6,6 +6,7 @@ public abstract class Player {
 	Cell[][] field;
 	int mines;
 	int attempts;
+	int shiptToDestroy;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
 	LinkedList<String> mineCoords;
@@ -42,6 +43,4 @@ public abstract class Player {
 	
 		return this.shipCoords;
 	}
-	
-
 }

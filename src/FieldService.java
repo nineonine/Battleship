@@ -8,7 +8,7 @@ public class FieldService {
 	Operator<Object> op;
 	LinkedList<String> listOfCoords;
 	Random rand;
-	private Player winner;
+	public Player winner;
 
 	public FieldService() {
 
@@ -226,8 +226,8 @@ public class FieldService {
 	public LinkedList<String> getPossibleTargetsInVicinity(Cell c, String tag) {
 		LinkedList<String> list = new LinkedList<String>();
 
-		op.debug("passed cell (previously aimed) : " + c);
-		op.debug("passed tag : " + tag);
+//		op.debug("passed cell (previously aimed) : " + c);
+//		op.debug("passed tag : " + tag);
 
 		switch (tag) {
 		case "v":
@@ -252,6 +252,7 @@ public class FieldService {
 			}
 			break;
 		default:
+			op.debug("no orientation passed - checking everything");
 			if (c.north != null && !(c.north.isShot)) {
 				list.add(c.north.tag);
 				op.debug(c.north + " isShot : " + c.north.isShot);
@@ -270,14 +271,14 @@ public class FieldService {
 			}
 			break;
 		}
-
+		
 		return list;
 	}
 
 	public void detectMineOverlapping(Player player) {
 		
 		// iterating through all the placed ship coords
-		for (int i = 0; i < player.returnShipCoords().size(); i++) {
+		for (int i = 0; i < player.returnShipCoords().size()-1; i++) {
 			// iterating through all placed mines
 			for (int j = 0; j < player.returnMineCoords().size(); j++) {
 				String tag = player.returnMineCoords().get(j);
@@ -297,9 +298,7 @@ public class FieldService {
 	}
 
 	public String getOrientation(String tag1, String tag2) {
-		
-		op.debug("getting orientation : " + tag1 + " == " + tag2 + " ?");
-		
+	
 		if (tag1.substring(0, 1).equals(tag2.substring(0, 1)) ) {
 			return "h";
 		} else {
@@ -310,12 +309,13 @@ public class FieldService {
 	public LinkedList<String> filterOutBadCoords(
 			LinkedList<String> possiblePlacestoShootAt, String lastAim,
 			String supposedOrientation) {
-		LinkedList<String> list = possiblePlacestoShootAt;
-		op.debug("Current this.possiblePlacestoShootAt : " + list);
+		LinkedList<String> list = new LinkedList<String>();
+		op.debug("Current this.possiblePlacestoShootAt : " + possiblePlacestoShootAt + " <--- before filtering INSIDE filterOutBadCoords");
+		op.debug("Current lastAim : " + lastAim);
 		int size = possiblePlacestoShootAt.size();
 		switch (supposedOrientation) {
-		case "v":
-			op.debug("because orientation is 'v' ");
+		case "h":
+			op.debug("because orientation is 'h' ");
 			for (int i=0;i<size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
 				if(lastAim.substring(0,1).equals(e.substring(0,1))) {
@@ -327,11 +327,12 @@ public class FieldService {
 			}
 
 			break;
-		case "h":
-			op.debug("because orientation is 'h' ");
+		case "v":
+			op.debug("because orientation is 'v' ");
 			for (int i=0;i<size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
-				if(lastAim.substring(0,1).equals(e.substring(0,1))) {
+				System.out.println(e + " and " + lastAim);
+				if(!lastAim.substring(0,1).equals(e.substring(0,1))) {
 					list.add(e);
 					op.debug(e + " was added ");
 				} else {
@@ -345,10 +346,9 @@ public class FieldService {
 				list.add(e);
 			}
 			op.debug("no orientation - adding and returning everything");
-			op.debug(list);
 			break;
 		}
-
+		op.debug("this is what does filterOutBadCoords() return : " + list);
 		return list;
 	}
 

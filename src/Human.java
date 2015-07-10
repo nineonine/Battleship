@@ -8,6 +8,7 @@ public class Human extends Player {
 	Cell[][] field;
 	int mines;
 	int attempts;
+	int shipsToDestroy;
 	LinkedList<Ship> fleet;
 	LinkedList<String> shipCoords;
 	LinkedList<String> mineCoords;
@@ -19,11 +20,12 @@ public class Human extends Player {
 		this.mines = mines;
 		this.field = service.generateField();
 		this.fleet = service.dispatchShips();
+		this.shipsToDestroy = this.fleet.size();
 		this.attempts = 0;
 		this.shipCoords = new LinkedList<String>();
 		this.mineCoords = new LinkedList<String>();
 	}
-
+	
 	public String returnName() {
 		return this.name;
 	}
@@ -164,10 +166,17 @@ public class Human extends Player {
 						service.setWinner(this);
 						return;
 					}
+					
+					Ship hitShip = service.returnCellByTag(coord,
+							passedPlayer.returnField()).returnShip();
+					hitShip.destroyCell(coord);
+					if (hitShip.IsDestroyed()) {
+						System.out.println(passedPlayer.returnName() + " Ship of size (" + hitShip.size + ") was destroyed !");// job done - ship destroyed.
+					}
 					++shots;
 					
 				} else {
-					op.printLine(this.returnName() + " tried to aim at " + coord.substring(0,2) + " ... but missed :(");
+					op.printLine(this.returnName() + " tried to aim at " + coord.substring(0,2) + " ... but missed :(\n");
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
 				}
 
@@ -175,6 +184,14 @@ public class Human extends Player {
 				op.printLine("Wrong command. Please try again.");
 				op.printHelp();
 				continue;
+			}
+			
+			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords());
+			// check for winner
+			if (passedPlayer.returnShipCoords().size() == 0) {
+				op.printLine(this.returnName() + " wins !");
+				service.setWinner(this);
+				return;
 			}
 			--shots;
 		}
