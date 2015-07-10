@@ -23,6 +23,10 @@ public class Cell {
 		this.slot = ship;
 	}
 	
+	public Ship returnShip() {
+		return this.slot;
+	}
+	
 	public static String convertXYtoTag(int x, int y) {
 		String s = null;
 		switch(x) {

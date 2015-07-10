@@ -46,7 +46,8 @@ public class Game {
 		
 		//now we have our players with set mines/ships and exploded mines/ships
 		while(this.p1.returnShipCoords().size() !=0 && this.p2.returnShipCoords().size() != 0) {
-//			
+
+			//randomly get the first-mover
 			switch(rand.nextInt(2)+1) {
 			case 0:
 				this.p1.shootAt(p2, service);
@@ -56,12 +57,9 @@ public class Game {
 				break;
 			}
 		}
-		
-
-		//randomly get the first-mover
 	
 		
-		
+		op.debug("End of game");
 	}
 
 }

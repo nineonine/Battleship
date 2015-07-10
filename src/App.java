@@ -50,7 +50,6 @@ public class App {
 					// changing some settings object
 
 					settingsObj.customize(operator);
-
 				break;
 
 				case "4":	// scores

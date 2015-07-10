@@ -52,6 +52,7 @@ public class Human extends Player {
 
 			op.printLine("Placing ship of size : " + fleet.getLast().size
 					+ " . Ships left: " + this.fleet.size());
+			
 			String command = op.listen();
 			if (command.matches("^[a-hA-H]{1}[1-8]{1}[\\s]{1}[hHvV]{1}(.*)")) {
 				// example : 'g1 v' or 'a6 h'
@@ -136,24 +137,35 @@ public class Human extends Player {
 			String coord = op.listen();
 			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
 				
+				
+				// Check if we shoot at 'isShot' place
 				if(service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot) {
 					op.printLine("Can not shoot at one place twice. Please try again");
 					continue;
 				}
-
+				
+				// If we aimed
 				if (passedPlayer.returnShipCoords().contains(
 						coord.substring(0, 2))) {
+					// we say that we aimed and update the state
 					op.printLine(this.returnName() + " aimed at "
 							+ passedPlayer.returnName() + "'s ship at '"
 							+ coord.substring(0, 2) + "' !");
+					// marking shot cell 'isShot'
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
+					// removing 
 					passedPlayer.returnShipCoords().remove(coord.substring(0,2));
+					// DEBUG
 					op.debug(passedPlayer.returnShipCoords());
+					
+					// CHECK FOR WINNER
 					if(passedPlayer.returnShipCoords().size() == 0) {
 						op.printLine(this.returnName() + " wins !");
+						service.setWinner(this);
 						return;
 					}
 					++shots;
+					
 				} else {
 					op.printLine(this.returnName() + " tried to aim at " + coord.substring(0,2) + " ... but missed :(");
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
