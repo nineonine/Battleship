@@ -3,14 +3,16 @@ import java.util.Date;
 
 public class Result {
 	
-	private String p1Name;
-	private String p2Name;
-	private Date dateOfMatch;
-	private String winnerName;
-	private int numOfSteps;
-	private String replayFileName;
+	public String p1Name;
+	public String p2Name;
+	public Date dateOfMatch;
+	public String winnerName;
+	public int numOfSteps;
+	public String replayFileName;
 	
 	public Result() {
 		
+		
 	}
+
 }

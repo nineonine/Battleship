@@ -190,7 +190,6 @@ public class FieldService {
 			}
 			break;
 		}
-		op.debug("Ship(" + ship.size + ") coords : " + ship.shipCoords);
 	}
 
 	public String getRandomOrientation() {
@@ -226,48 +225,36 @@ public class FieldService {
 	public LinkedList<String> getPossibleTargetsInVicinity(Cell c, String tag) {
 		LinkedList<String> list = new LinkedList<String>();
 
-//		op.debug("passed cell (previously aimed) : " + c);
-//		op.debug("passed tag : " + tag);
-
 		switch (tag) {
 		case "v":
 			if (c.north != null && !(c.north.isShot)) {
 				list.add(c.north.tag);
-				op.debug(c.north + " isShot : " + c.north.isShot);
 			}
 			if (c.south != null && !(c.south.isShot)) {
 				list.add(c.south.tag);
-				op.debug(c.south + " isShot :" + c.south.isShot);
 			}
 			break;
 		case "h":
 			if (c.east != null && !(c.east.isShot)) {
 				list.add(c.east.tag);
-				op.debug(c.east + " isShot : " + c.east.isShot);
 			}
 
 			if (c.west != null && !(c.west.isShot)) {
 				list.add(c.west.tag);
-				op.debug(c.west + " isShot " + c.west.isShot);
 			}
 			break;
 		default:
-			op.debug("no orientation passed - checking everything");
 			if (c.north != null && !(c.north.isShot)) {
 				list.add(c.north.tag);
-				op.debug(c.north + " isShot : " + c.north.isShot);
 			}
 			if (c.south != null && !(c.south.isShot)) {
 				list.add(c.south.tag);
-				op.debug(c.south + " isShot :" + c.south.isShot);
 			}
 			if (c.east != null && !(c.east.isShot)) {
 				list.add(c.east.tag);
-				op.debug(c.east + " isShot : " + c.east.isShot);
 			}
 			if (c.west != null && !(c.west.isShot)) {
 				list.add(c.west.tag);
-				op.debug(c.west + " isShot " + c.west.isShot);
 			}
 			break;
 		}
@@ -282,6 +269,9 @@ public class FieldService {
 			// iterating through all placed mines
 			for (int j = 0; j < player.returnMineCoords().size(); j++) {
 				String tag = player.returnMineCoords().get(j);
+				Ship hitShip = this.returnCellByTag(tag,
+						player.returnField()).returnShip();
+
 				// GOT SOME ERROR HERE
 				// Exception in thread "main" java.lang.IndexOutOfBoundsException: Index: 13, Size: 13
 				// It happens rarely so will fix it later
@@ -290,6 +280,8 @@ public class FieldService {
 					op.printLine("Mine at '" + player.returnMineCoords().get(j)
 							+ "' exploded. \n" + player.returnName()
 							+ "'s ship is damaged !\n");
+					hitShip.destroyCell(tag);
+					
 				}
 				// if mine blows up, we set this cell to isShot - true
 				this.returnCellByTag(tag, player.returnField()).isShot = true;
@@ -310,33 +302,24 @@ public class FieldService {
 			LinkedList<String> possiblePlacestoShootAt, String lastAim,
 			String supposedOrientation) {
 		LinkedList<String> list = new LinkedList<String>();
-		op.debug("Current this.possiblePlacestoShootAt : " + possiblePlacestoShootAt + " <--- before filtering INSIDE filterOutBadCoords");
-		op.debug("Current lastAim : " + lastAim);
 		int size = possiblePlacestoShootAt.size();
 		switch (supposedOrientation) {
 		case "h":
-			op.debug("because orientation is 'h' ");
 			for (int i=0;i<size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
 				if(lastAim.substring(0,1).equals(e.substring(0,1))) {
 					list.add(e);
-					op.debug(e + " was added ");
 				} else {
-					op.debug(e + " was filtered out");
 				}
 			}
 
 			break;
 		case "v":
-			op.debug("because orientation is 'v' ");
 			for (int i=0;i<size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
-				System.out.println(e + " and " + lastAim);
 				if(!lastAim.substring(0,1).equals(e.substring(0,1))) {
 					list.add(e);
-					op.debug(e + " was added ");
 				} else {
-					op.debug(e + " was filtered out");
 				}
 			}
 			break;
@@ -345,10 +328,8 @@ public class FieldService {
 				String e = possiblePlacestoShootAt.get(i);
 				list.add(e);
 			}
-			op.debug("no orientation - adding and returning everything");
 			break;
 		}
-		op.debug("this is what does filterOutBadCoords() return : " + list);
 		return list;
 	}
 

@@ -23,6 +23,7 @@ public class App {
 			switch (choice) {
 
 				case "1":	// single player game
+
 					operator.setMenuLevel("game", "setup");
 					settingsObj.multiPlayerOn = false;
 					game = new Game(operator, settingsObj);

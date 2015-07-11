@@ -65,11 +65,10 @@ public class AI extends Player {
 		int shots = 1;
 
 		while (shots != 0) {
-			op.debug("\t\t new move\n");
+			this.attempts++;
 			
 			if (this.lastAim != null && !service.returnCellByTag(this.lastAim,
 					passedPlayer.returnField()).returnShip().IsDestroyed()) { // <-- we aimed previous time and the ship we are shooting at is not destroyed 
-				op.debug(this.name + " knows where to shoot now because this.lastAim = " + this.lastAim +  " and ship is Not Destroyed");
 				
 				// saving pointer to the cell we are working on
 				Cell cell = service.returnCellByTag(this.lastAim,
@@ -94,8 +93,6 @@ public class AI extends Player {
 																this.supposedOrientation),
 											service.getPossibleTargetsInVicinity(cell,this.supposedOrientation))));
 				
-				op.debug("possiblePlacestoShootAt : "+ this.possiblePlacestoShootAt);
-				
 				String pickedCoord = "";
 				if(this.possiblePlacestoShootAt.size() == 0) {
 					pickedCoord = service.returnCellByTag(this.lastAim, passedPlayer.returnField()).returnShip().getFirstOccurenceOfnotDamagedPart();
@@ -109,7 +106,6 @@ public class AI extends Player {
 					
 					this.supposedOrientation = service.getOrientation(cell.tag,
 							pickedCoord); // hypothesis proved ! - saved the right orientation
-					op.debug("so we aimed previously at " + this.lastAim + " and now we aimed at " + pickedCoord + " so the orientation is : " + this.supposedOrientation);
 					
 					op.printLine(this.name + " aimed at " + pickedCoord);
 					cell.isShot = true;
@@ -128,12 +124,9 @@ public class AI extends Player {
 							passedPlayer.returnField()).returnShip();
 					hitShip.destroyCell(pickedCoord);
 					if (!hitShip.isDestroyed) {
-						op.debug("\tbefore starting new move we update this.possiblePlacestoShootAt");
-						op.debug("\t current this.possiblePlacestoShootAt : " + this.possiblePlacestoShootAt);
 						this.possiblePlacestoShootAt = service.filterOutBadCoords(this.possiblePlacestoShootAt, 
 												 								  this.lastAim, 
 																				  this.supposedOrientation);
-						op.debug("\t after filtering out : " + this.possiblePlacestoShootAt);
 						this.possiblePlacestoShootAt.remove(pickedCoord);
 						this.lastAim = pickedCoord; // we are not completely done with that ship. Have to aim somewhere in vicinity
 					} else {
@@ -173,7 +166,6 @@ public class AI extends Player {
 					passedPlayer.returnShipCoords().remove(coord);
 
 					hitShip.destroyCell(coord);
-					op.debug(hitShip.showLeftCoords());
 					if (!hitShip.isDestroyed) {
 						this.lastAim = coord; // we are not completely done with
 												// that ship. Have to aim
@@ -181,8 +173,8 @@ public class AI extends Player {
 					} else {
 						this.lastAim = null;
 						this.shipsToDestroy--;
-						op.debug(passedPlayer.name + " Ship of size (" + hitShip.size + ") was desrtroyed !");// job done - ship destroyed.
-						op.debug("");
+						op.printLine(passedPlayer.name + " Ship of size (" + hitShip.size + ") was desrtroyed !\n");// job done - ship destroyed.
+
 												// Clearing cache to shoot
 												// randomly next time
 					}
@@ -192,13 +184,14 @@ public class AI extends Player {
 					op.printLine(this.returnName() + " tried to aim at "
 							+ coord + " ... but missed :(\n");
 					cell.isShot = true;
-					this.getAndRemoveRandomTagFromShotMemory();
 				}
 			}
 			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords());
+			
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {
 				op.printLine(this.returnName() + " wins !");
+				op.printLine(this.returnName() + " with " + this.attempts + " attempts");
 				service.setWinner(this);
 				return;
 			}
@@ -266,7 +259,7 @@ public class AI extends Player {
 	}
 
 	public String getAndRemoveRandomTagFromShotMemory() {
-
+		
 		int randomIndex = rand.nextInt(this.shotMemory.size());
 		return this.shotMemory.remove(randomIndex);
 	}

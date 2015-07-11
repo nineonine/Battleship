@@ -124,7 +124,6 @@ public class Human extends Player {
 				continue;
 			}
 		}
-		op.debug("mine coords : " + passedMineCoords);
 		op.printLine("Mine placement Complete !\n");
 	}
 
@@ -136,6 +135,7 @@ public class Human extends Player {
 		op.printLine("Example : 'a1' or 'h8'");
 
 		while (shots != 0) {
+			this.attempts++;
 			String coord = op.listen();
 			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
 				
@@ -190,6 +190,7 @@ public class Human extends Player {
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {
 				op.printLine(this.returnName() + " wins !");
+				op.printLine(this.returnName() + " with " + this.attempts + " attempts");
 				service.setWinner(this);
 				return;
 			}

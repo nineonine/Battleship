@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -6,6 +7,7 @@ public class Operator<T> {
 	Date date;
 	Scanner sc;
 	String lastCommand;
+	String path;
 
 	String menuLevel; // can be main / game / settings / scores;
 	String gameStage; // ship placement and game itself
@@ -22,6 +24,8 @@ public class Operator<T> {
 	public Operator(String env) {
 		this.menuLevel = env;
 		sc = new Scanner(System.in);
+		this.path = System.getProperty("user.dir");
+		new File(this.path + "/replays").mkdirs();
 	}
 	
 	public void printLine(T s) {
