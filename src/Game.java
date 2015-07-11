@@ -18,8 +18,8 @@ public class Game {
 		op.printLine("Date : " + op.dateStamp()+"\n");
 		
 		
-		//this.p1 = new Human(st.player1Name, st.numOfMines, service, op);
-		this.p1 = new AI("Bot 1", st.numOfMines, service, op);
+		this.p1 = new Human(st.player1Name, st.numOfMines, service, op);
+//		this.p1 = new AI("Bot 1", st.numOfMines, service, op);
 		if(st.multiPlayerOn) {
 			this.p2 = new Human(st.player2Name, st.numOfMines, service, op);} else {
 			this.p2 = new AI("Bot 2", st.numOfMines, service, op);}

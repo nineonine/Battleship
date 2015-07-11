@@ -113,13 +113,6 @@ public class AI extends Player {
 					service.returnCellByTag(this.lastAim,
 							passedPlayer.returnField()).isShot = true;
 
-					// check for winner
-					if (passedPlayer.returnShipCoords().size() == 0) {
-						op.printLine(this.returnName() + " wins !");
-						service.setWinner(this);
-						return;
-					}
-
 					Ship hitShip = service.returnCellByTag(pickedCoord,
 							passedPlayer.returnField()).returnShip();
 					hitShip.destroyCell(pickedCoord);
@@ -186,7 +179,7 @@ public class AI extends Player {
 					cell.isShot = true;
 				}
 			}
-			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords());
+			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords()+"\n");
 			
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {

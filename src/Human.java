@@ -160,12 +160,12 @@ public class Human extends Player {
 					// DEBUG
 					op.debug(passedPlayer.returnShipCoords());
 					
-					// CHECK FOR WINNER
-					if(passedPlayer.returnShipCoords().size() == 0) {
-						op.printLine(this.returnName() + " wins !");
-						service.setWinner(this);
-						return;
-					}
+//					// CHECK FOR WINNER
+//					if(passedPlayer.returnShipCoords().size() == 0) {
+//						op.printLine(this.returnName() + " wins !");
+//						service.setWinner(this);
+//						return;
+//					}
 					
 					Ship hitShip = service.returnCellByTag(coord,
 							passedPlayer.returnField()).returnShip();
@@ -186,7 +186,7 @@ public class Human extends Player {
 				continue;
 			}
 			
-			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords());
+			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords() + "\n");
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {
 				op.printLine(this.returnName() + " wins !");
