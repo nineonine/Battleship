@@ -171,8 +171,6 @@ public class FieldService {
 			while (size != 0) {
 				cell.deployShip(ship);
 				ship.shipCoords.add(cell.tag);
-				op.printLine("Ship(" + ship.size
-						+ ") was successfully deployed to Cell " + cell.tag);
 				coords.add(cell.tag);
 				cell = cell.east;
 				size--;
@@ -182,8 +180,6 @@ public class FieldService {
 			while (size != 0) {
 				cell.deployShip(ship);
 				ship.shipCoords.add(cell.tag);
-				op.printLine("Ship(" + ship.size
-						+ ") was successfully deployed to Cell " + cell.tag);
 				coords.add(cell.tag);
 				cell = cell.south;
 				size--;
@@ -258,30 +254,32 @@ public class FieldService {
 			}
 			break;
 		}
-		
+
 		return list;
 	}
 
 	public void detectMineOverlapping(Player player) {
-		
+
 		// iterating through all the placed ship coords
-		for (int i = 0; i < player.returnShipCoords().size()-1; i++) {
+		for (int i = 0; i < player.returnShipCoords().size() - 1; i++) {
 			// iterating through all placed mines
 			for (int j = 0; j < player.returnMineCoords().size(); j++) {
 				String tag = player.returnMineCoords().get(j);
-				Ship hitShip = this.returnCellByTag(tag,
-						player.returnField()).returnShip();
+				Ship hitShip = this.returnCellByTag(tag, player.returnField())
+						.returnShip();
 
 				// GOT SOME ERROR HERE
-				// Exception in thread "main" java.lang.IndexOutOfBoundsException: Index: 13, Size: 13
+				// Exception in thread "main"
+				// java.lang.IndexOutOfBoundsException: Index: 13, Size: 13
 				// It happens rarely so will fix it later
-				if (player.returnShipCoords().get(i).equals(tag)) { // <--- if we aim
+				if (player.returnShipCoords().get(i).equals(tag)) { // <--- if
+																	// we aim
 					player.returnShipCoords().remove(i);
 					op.printLine("Mine at '" + player.returnMineCoords().get(j)
 							+ "' exploded. \n" + player.returnName()
 							+ "'s ship is damaged !\n");
 					hitShip.destroyCell(tag);
-					
+
 				}
 				// if mine blows up, we set this cell to isShot - true
 				this.returnCellByTag(tag, player.returnField()).isShot = true;
@@ -290,8 +288,8 @@ public class FieldService {
 	}
 
 	public String getOrientation(String tag1, String tag2) {
-	
-		if (tag1.substring(0, 1).equals(tag2.substring(0, 1)) ) {
+
+		if (tag1.substring(0, 1).equals(tag2.substring(0, 1))) {
 			return "h";
 		} else {
 			return "v";
@@ -305,9 +303,9 @@ public class FieldService {
 		int size = possiblePlacestoShootAt.size();
 		switch (supposedOrientation) {
 		case "h":
-			for (int i=0;i<size; i++) {
+			for (int i = 0; i < size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
-				if(lastAim.substring(0,1).equals(e.substring(0,1))) {
+				if (lastAim.substring(0, 1).equals(e.substring(0, 1))) {
 					list.add(e);
 				} else {
 				}
@@ -315,22 +313,127 @@ public class FieldService {
 
 			break;
 		case "v":
-			for (int i=0;i<size; i++) {
+			for (int i = 0; i < size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
-				if(!lastAim.substring(0,1).equals(e.substring(0,1))) {
+				if (!lastAim.substring(0, 1).equals(e.substring(0, 1))) {
 					list.add(e);
 				} else {
 				}
 			}
 			break;
 		default:
-			for (int i=0; i<size;i++) {
+			for (int i = 0; i < size; i++) {
 				String e = possiblePlacestoShootAt.get(i);
 				list.add(e);
 			}
 			break;
 		}
 		return list;
+	}
+
+	public void showBoard(Player p) { // show board after placing shot
+		// Cell[][] field = new Cell[8][8];
+		String row = "ABCDEFGH";
+
+		System.out.println("\t\t" + p.returnName() + " Board");
+		System.out.print("\t1" + "\t2" + "\t3" + "\t4" + "\t5" + "\t6" + "\t7"
+				+ "\t8\n");
+		System.out.println();
+		for (int i = 0; i < p.returnField().length; i++) {
+			System.out.print(row.charAt(i) + "\t");
+			for (int j = 0; j < p.returnField().length; j++) {
+
+				if (p.returnField()[i][j].isShot) {
+					if (p.returnField()[i][j].returnShip() == null) {
+						System.out.print("M" + "\t");
+					} else
+						System.out.print("X" + "\t");
+				} else
+					System.out.print("O" + "\t");
+
+			}
+			System.out.println("\n");
+		}
+		System.out.println();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showShip(Player p) { // show board after placing ship
+
+		String[][] flag = new String[8][8];
+		String row = "ABCDEFGH";
+		System.out.print("\t1" + "\t2" + "\t3" + "\t4" + "\t5" + "\t6" + "\t7"
+				+ "\t8\n");
+		System.out.println();
+		for (int i = 0; i < p.returnField().length; i++) {
+			System.out.print(row.charAt(i) + "\t");
+			for (int j = 0; j < p.returnField().length; j++) {
+				flag[i][j] = Cell.convertXYtoTag(i, j);
+				if (p.returnShipCoords().contains(flag[i][j])) {
+					System.out.print(flag[i][j] + "\t");
+				} else
+					System.out.print("O" + "\t");
+			}
+			System.out.println("\n");
+		}
+		System.out.println();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showMines(LinkedList<String> p) {
+		String[][] flag = new String[8][8];
+		String row = "ABCDEFGH";
+		System.out.print("\t1" + "\t2" + "\t3" + "\t4" + "\t5" + "\t6" + "\t7"
+				+ "\t8\n");
+		System.out.println();
+		for (int i = 0; i < 8; i++) {
+			System.out.print(row.charAt(i) + "\t");
+			for (int j = 0; j < 8; j++) {
+				flag[i][j] = Cell.convertXYtoTag(i, j);
+				if (p.contains(flag[i][j])) {
+					System.out.print(flag[i][j] + "\t");
+				} else
+					System.out.print("O" + "\t");
+			}
+			System.out.println("\n");
+		}
+		System.out.println();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showField() {
+		String[][] flag = new String[8][8];
+		String row = "ABCDEFGH";
+		System.out.print("\t1" + "\t2" + "\t3" + "\t4" + "\t5" + "\t6" + "\t7"
+				+ "\t8\n");
+		System.out.println();
+		for (int i = 0; i < 8; i++) {
+			System.out.print(row.charAt(i) + "\t");
+			for (int j = 0; j < 8; j++) {
+				flag[i][j] = Cell.convertXYtoTag(i, j);
+				System.out.print(flag[i][j] + "\t");
+
+			}
+			System.out.println("\n");
+		}
+		System.out.println();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

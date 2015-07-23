@@ -50,7 +50,8 @@ public class Operator<T> {
 		System.out.println("2. Multi Player");
 		System.out.println("3. Settings");
 		System.out.println("4. Scores");
-		System.out.println("5. Exit");
+		System.out.println("5. Rules");
+		System.out.println("6. Exit");
 
 	}
 
@@ -83,6 +84,10 @@ public class Operator<T> {
 
 		case "scores":
 
+			break;
+			
+		case "rules":
+			
 			break;
 
 		}

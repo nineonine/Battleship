@@ -47,8 +47,8 @@ public class Human extends Player {
 
 		op.printLine(this.name + " is placing ships ... \n");
 		op.printLine("Please enter cell coordinates");
-		op.printLine("Example : 'a1 h' will result in placing 4sized ship in a1-a2-a3-a4");
-		op.printLine("\t\t\tdisplaying example field here <--------\n");
+		op.printLine("Example : 'a1 h' will result in placing 4sized ship in a1-a2-a3-a4\n");
+		service.showField();
 
 		while (!this.fleet.isEmpty()) {
 
@@ -68,8 +68,7 @@ public class Human extends Player {
 					service.placeShip(command, this.fleet.getLast(),
 							this.returnField(), this.shipCoords);
 					this.fleet.removeLast();
-					op.printLine("Current ship placement : "
-							+ shipCoords.toString());
+					service.showShip(this);
 				} else {
 					op.printLine("Impossible to place ship here. It is either occupied or you are going out of field bounds");
 					op.printLine(" ------------- display players field here");
@@ -117,6 +116,7 @@ public class Human extends Player {
 					op.printLine(coord.substring(0, 2) + " is mined ! "
 							+ this.mines + " mines left.");
 				}
+				service.showMines(passedMineCoords);
 
 			} else {
 				op.printLine("Wrong command. Please try again.");
@@ -157,15 +157,6 @@ public class Human extends Player {
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
 					// removing 
 					passedPlayer.returnShipCoords().remove(coord.substring(0,2));
-					// DEBUG
-					op.debug(passedPlayer.returnShipCoords());
-					
-//					// CHECK FOR WINNER
-//					if(passedPlayer.returnShipCoords().size() == 0) {
-//						op.printLine(this.returnName() + " wins !");
-//						service.setWinner(this);
-//						return;
-//					}
 					
 					Ship hitShip = service.returnCellByTag(coord,
 							passedPlayer.returnField()).returnShip();
@@ -186,7 +177,7 @@ public class Human extends Player {
 				continue;
 			}
 			
-			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords() + "\n");
+
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {
 				op.printLine(this.returnName() + " wins !");
@@ -195,6 +186,7 @@ public class Human extends Player {
 				return;
 			}
 			--shots;
+			service.showBoard(passedPlayer);
 		}
 		passedPlayer.shootAt(this, service);
 	}

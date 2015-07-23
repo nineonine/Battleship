@@ -65,6 +65,12 @@ public class App {
 
 				case "5":	// exit
 
+					operator.printLine("RULES TO BE DISPLAYED HERE");
+
+				break;
+				
+				case "6":	// exit
+
 					System.out.println("PROGRAM TERMINATED");
 					System.exit(0);
 

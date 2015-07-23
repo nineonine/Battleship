@@ -127,7 +127,7 @@ public class AI extends Player {
 						this.supposedOrientation = "undefined"; 
 						this.shipsToDestroy--;
 						this.possiblePlacestoShootAt = new LinkedList<String>();
-						System.out.println(passedPlayer.returnName() + " Ship of size (" + hitShip.size + ") was destroyed !");// job done - ship destroyed.
+						
 					}
 					++shots;
 				} else { // <-- its a miss
@@ -166,7 +166,6 @@ public class AI extends Player {
 					} else {
 						this.lastAim = null;
 						this.shipsToDestroy--;
-						op.printLine(passedPlayer.name + " Ship of size (" + hitShip.size + ") was desrtroyed !\n");// job done - ship destroyed.
 
 												// Clearing cache to shoot
 												// randomly next time
@@ -179,16 +178,18 @@ public class AI extends Player {
 					cell.isShot = true;
 				}
 			}
-			op.debug("Enemy Coords left : " + passedPlayer.returnShipCoords()+"\n");
+	
 			
 			// check for winner
 			if (passedPlayer.returnShipCoords().size() == 0) {
 				op.printLine(this.returnName() + " wins !");
 				op.printLine(this.returnName() + " with " + this.attempts + " attempts");
 				service.setWinner(this);
+				service.showBoard(passedPlayer);
 				return;
 			}
 			--shots;
+			service.showBoard(passedPlayer);
 		}
 		
 		
@@ -214,11 +215,7 @@ public class AI extends Player {
 				service.placeShip(command, this.fleet.getLast(),
 						this.returnField(), this.shipCoords);
 				this.fleet.removeLast();
-				op.printLine("Current ship placement : "
-						+ shipCoords.toString());
-			} else {
-				op.printLine("Impossible to place ship here. It is either occupied or you are going out of field bounds");
-				op.printLine(" ------------- display players field here");
+				
 			}
 		}
 

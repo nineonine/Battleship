@@ -8,16 +8,20 @@ public class Game {
 	public Operator<Object> op;
 	public GameLogger logger;
 	
+	
 	public Game(Operator<Object> op, Settings st) {
 		
+	
 		this.op = op;
 		service = new FieldService(this.op, st);
+	
 		logger = new GameLogger(op.dateStamp());
 		
 		op.printLine("\t\tGame setup starts !");
 		op.printLine("Date : " + op.dateStamp()+"\n");
 		
-		
+		op.printLine("Ship Board\n");
+		service.showField();
 		this.p1 = new Human(st.player1Name, st.numOfMines, service, op);
 //		this.p1 = new AI("Bot 1", st.numOfMines, service, op);
 		if(st.multiPlayerOn) {
@@ -58,9 +62,11 @@ public class Game {
 				break;
 			}
 		}
-	
 		
-		op.debug("End of game");
+
+		
+		
+		op.printLine("End of game");
 	}
 
 }

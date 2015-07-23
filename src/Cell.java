@@ -2,7 +2,7 @@
 public class Cell {
 	
 	Cell north,south,east,west;
-	String tag;
+	String tag;				
 	boolean isMined;
 	boolean isShot;
 	private int x;

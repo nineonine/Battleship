@@ -36,7 +36,6 @@ public class Ship {
 	}
 
 	public String getFirstOccurenceOfnotDamagedPart() {
-		// TODO Auto-generated method stub
 		return this.shipCoords.element();
 	}
 }
