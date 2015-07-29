@@ -38,7 +38,8 @@ public class Game {
 		this.p1.placeShips(service);
 		this.p2.placeShips(service);
 		
-		op.printLine("Everyone ready !!! Game starts !\n");
+		op.printLine("Everyone ready !!! Game starts in few seconds !\n");
+		op.waitTimer(3000);
 		
 	}
 	

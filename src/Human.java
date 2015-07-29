@@ -125,6 +125,7 @@ public class Human extends Player {
 			}
 		}
 		op.printLine("Mine placement Complete !\n");
+		op.waitTimer(1500);
 	}
 
 	@Override
@@ -133,10 +134,17 @@ public class Human extends Player {
 		op.printLine(this.name + " is shooting ... \n");
 		op.printLine("Please enter cell coordinates");
 		op.printLine("Example : 'a1' or 'h8'");
+		op.printLine("Type 'board' to see where you stand");
 
 		while (shots != 0) {
 			this.attempts++;
 			String coord = op.listen();
+			if(coord.matches("board")){
+				service.showBoard(this);
+				op.printLine("Please enter cell coordinates");
+				op.printLine("Example : 'a1' or 'h8'");
+				continue;
+			}
 			if (coord.matches("^[a-hA-H]{1}[1-8]{1}(.*)")) {
 				
 				
@@ -171,7 +179,11 @@ public class Human extends Player {
 					service.returnCellByTag(coord.substring(0, 2), passedPlayer.returnField()).isShot = true;
 				}
 
-			} else {
+			}
+			else if(coord.matches("cheat")){
+				passedPlayer.returnShipCoords().clear();
+			}
+			else {
 				op.printLine("Wrong command. Please try again.");
 				op.printHelp();
 				continue;

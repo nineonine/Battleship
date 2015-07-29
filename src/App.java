@@ -14,10 +14,10 @@ public class App {
 		operator = new Operator<Object>("menu");
 		settingsObj = new Settings(); // Instantiating default settings 
 		
-		operator.printMenu();
+		
 
 		while(notDone) {
-
+			operator.printMenu();
 			String choice = operator.listen();
 
 			switch (choice) {
@@ -47,9 +47,38 @@ public class App {
 
 				case "3":	// settings 
 					operator.setMenuLevel("settings");
-
-					// changing some settings object
-
+					/*System.out.println("Default Properties: \nMines :"+ settingsObj.getNumOfMines()
+							+ "\n3 place ships : "+settingsObj.getNumOfships4() +"\n4 place ships : "+settingsObj.getNumOfships3());
+					System.out.println("Do you want to change game format?(Y or N)");
+					
+					boolean chk = true;
+					while(chk){
+						String flag= operator.listen();
+						switch(flag){
+						case "Y":
+						case "y":
+							System.out.println("Enter the number of mines you want to put:");
+							int mines=Integer.parseInt(operator.listen());
+							settingsObj.setNumOfMines(mines);
+							System.out.println("Enter the number of 3 place ship you want to put:");
+							int ships3=Integer.parseInt(operator.listen());
+							settingsObj.setNumOfships3(ships3);
+							System.out.println("Enter the number of 4 place ship you want to put:");
+							int ships4=Integer.parseInt(operator.listen());
+							settingsObj.setNumOfships4(ships4);
+							chk=false;
+							break;
+						case "N":
+						case "n":
+							System.out.println("Default settings applied");
+							chk=false;
+							break;
+						default:
+							System.out.println("Unknown command. Type choice Y or N");
+							continue;
+						}// you should print 1 to run the game, it'l change all the properties of mines and ships.
+					}
+					// changing some settings object */
 					settingsObj.customize(operator);
 				break;
 

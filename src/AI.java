@@ -189,7 +189,7 @@ public class AI extends Player {
 				return;
 			}
 			--shots;
-			service.showBoard(passedPlayer);
+			op.waitTimer(2000);
 		}
 		
 		

@@ -105,4 +105,11 @@ public class Operator<T> {
 		
 		return date.toString();
 	}
+	public void waitTimer(int w){
+		try {
+			Thread.sleep(w);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
